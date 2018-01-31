@@ -4,30 +4,28 @@ import requests
 import json
 import datetime
 starttime = datetime.datetime.now()
-kl ='http://i.feed.mix.sina.com.cn/api/news/get?'   
-with open('D:/adh/wr.txt', 'r+') as f:
-     a =f.readlines()
-urls = []
-for u  in a:
-    urls.append(u)
-# print(urls)
-# print(type(urls))
-for url in urls:
-#     print(url)
-    urlt = url.strip()
-#     print(type(urlt))
-    urll = (str(urlt)).replace('https', 'http')
-    print(urll)
-    payload = {'urls':urll,'fields':'title'}
-    r = (requests.get(kl,params= payload ))
-    data=r.text
-    ddata=json.loads(data)
-    for k in ddata['result']['data']:
-#         print(url+":"+ ddata['result']['data'][k]['title'])
-        Minsd = url + "-->"+ ddata['result']['data'][k]['title']
-        with open('d:/sn.txt','a') as f:
-            f.writelines(Minsd)
-#long running
-
+kl ='http://i.feed.mix.sina.com.cn/api/news/get?' 
+with open('d:/adh/wr.txt') as f:
+    a = f.readlines()
+    for i in range(len(a)):
+        s = (str(a[i]).split("\t"))
+        urll = str((s[2]).replace("https","http")).strip()
+#         print(urll)
+        payload = {'urls':urll,'fields':'title'}
+        r = (requests.get(kl,params= payload ))
+        print(r.url)
+        data=r.text
+        ddata=json.loads(data)
+        for k in ddata['result']['data']:
+#            print(urll+":"+ ddata['result']['data'][k]['title'])
+            Minsd =  ddata['result']['data'][k]['title'] + "-->"+ urll+ "-->" + s[0] + "-->" + s[1]
+            with open('d:/sn.txt','a') as f:
+                try:
+                    f.writelines(Minsd+"\n")
+                except:
+                    pass
+# #long running
+count = len(open("d:/sn.txt",'r').readlines())  
+print(count)
 endtime = datetime.datetime.now()
 print(str((endtime - starttime).seconds) + "s")
