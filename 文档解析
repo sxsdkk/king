@@ -1,0 +1,26 @@
+html = """
+<span class='red'>item1</span>
+<div>
+    <span id='s1'>item2</span>
+</div>
+"""
+# 使用 scrapy 的Selector
+from scrapy.selector import Selector
+ 
+# scrapy 的选择器支持 css和xpath选择。下面是css选择器。如果你了解前端JQuery的知识，
+# 会发现
+Selector(text=html).css('span::text').extract()
+# 输出 : ['item1','item2']
+Selector(text=html).css('span#s1::text').extract()
+# 输出 : ['item2']
+Selector(text=html).css('div>span::text').extract()
+# 输出 : ['item2']
+ 
+ 
+# 使用bs4
+from bs4 import BeautifulSoup 
+soup = BeautifulSoup(html,'html.parser')
+sl = soup.find_all("span")
+result = [span.get_text() for span in sl]
+print(result)
+# ['item1', 'item2']
