@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+#-*- coding:utf-8 -*-
+import  requests
+import  re
+from lxml import etree
+import datetime
+import mysql.connector
+import time
+from bs4 import  BeautifulSoup
+url = 'http://pc.youku.com/iku/2018worldCup'
+r =requests.get(url)
+data = r.text
+#ddata = data.replace("window.jQuery111205574701889781417_1528969194016 && jQuery111205574701889781417_1528969194016(","").replace(")","").replace(";","")
+sdata = data.encode('latin1').decode('utf-8')
+# print(sdata)
+selector = etree.HTML(sdata)
+surl = selector.xpath('//*//li[1]/a/@href')
+surl_pattern = r"(?<=\W)\/\/v\b.*?html(?=)"
+urls = re.finditer(surl_pattern, str(sdata), re.MULTILINE)
+urll =  [url.group() for url  in urls]
+print(len(urll))
+for url1 in urll:
+    print(url1)
+    rurl = "https:"+ url1
+    r = requests.get(url1)
+
+    # ddatas = r.text
+    # dart = []
+    # selector = etree.HTML(ddatas)
+    # name1 = selector.xpath('//*//h2/a/text()')  # 专辑
+    # # print(name1)
+    # name2 =selector.xpath('//h3[@class="drama-title"]/text()')#相关推荐
+    # # name3 = selector.xpath('//*[@id="module_basic_dayu_sub"]//h2/a/text()')  # KOL
+    # titles = selector.xpath('//a/div[@class="title"]/text()')
+    # nums = selector.xpath('//a/div[@class="status"]/span/text()')
+    # timelengths = selector.xpath('//a/div[@class="cover"]/span[@class="c-time"]/span/text()')
+    # dates = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    # now = datetime.datetime.now()
+    # delta = datetime.timedelta(days=-1)
+    # date = str(delta + now)
+    # sc = len(nums)
+    # names = name1*sc
+    # print(len(timelengths))
+    # print(nums1)
+    # nums=[]
+    # for i in range(len(timelengths)):
+    #     title = titles[i]  # 视频名字
+    #     num = nums[i]  # 视频播放次数
+    #     timelength = timelengths[i]  # 视频时长
+    #     name = names[i]
+    #     dates = time.strftime('%Y-%m-%d', time.localtime())
+    #     m = ( "'"+title+"'","'" +num+"'","'"+timelength+"'","'"+dates+"'","'"+date+"'","'"+name+"'")
+    #     m1 = (num,timelength,dates,title,name)
+    #     dart.append(m)
+    #     # print(m)
+    #
+    # conn = mysql.connector.connect(user='root', password='261190', database='youku')
+    # cursor = conn.cursor()
+    # stmt = "INSERT INTO youku0616 (title,num,timelength,dates,date,name) VALUES (%s, %s,%s,%s,%s,%s)"
+    # cursor.executemany(stmt, dart)
+    # print('rowcount =', cursor.rowcount)
+    # conn.commit()
+    # cursor.close()
+    #
