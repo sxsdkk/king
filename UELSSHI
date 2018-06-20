@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import  requests
+import  re
+import time
+headers ={
+'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+'Accept-Encoding':'gzip, deflate',
+'Accept-Language':'zh-CN,zh;q=0.9',
+'Cache-Control':'max-age=0',
+'Connection':'keep-alive',
+'Cookie':'__ysuid=1510737062337JKd; juid=01cfhhj65r1obv; cna=r0uLElP+olkCAW/G5j5IQD/3; __aysid=1528988143916Ns2; _uab_collina=152899235566195462821374; __aryft=1529332885; _umdata=0712F33290AB8A6D66E3BA983DDDEF700E8B9CB254BAEB9EAD5B74F5FB4E54FA53F98F4D6F695743CD43AD3E795C914CC75441EBF52581D1F13AC205F16250F1; _m_h5_tk=583a6f44909f2c15fdeef196fb9e998e_1529419742048; _m_h5_tk_enc=3ab3604306e5089044ef16064eccbecb; __aysvstp=3751; ykss=4c06295b2d9d14d2fd43b896; __ayft=1529415244833; __ayscnt=1; ypvid=1529415245019j5530O; yseid=1529415245020wSQCM9; ysestep=1; yseidcount=13; yseidtimeout=1529422445020; ycid=0; ystep=431; seid=01cgc417721o06; referhost=https%3A%2F%2Fwww.baidu.com; seidtimeout=1529417045027; P_ck_ctl=CADE59A538DA6C5AAAC1B9B9C0983CA3; ctoken=y65mwMZSTMuxGfoyIuXDsr69; __arpvid=1529416163922wxQ4jU-1529416163952; __aypstp=12; __ayspstp=593; isg=BFdXesWrwIf8REQ581rv3egE5sthNCuXY3ty56mEcyaN2HcasWy7ThX6PnhGKwN2',
+'Host':'so.youku.com',
+'Upgrade-Insecure-Requests':'1',
+'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'
+}
+start_url = 'http://so.youku.com/search_video/q_世界杯?'
+r= requests.get(start_url,headers=headers)
+datas = r.text
+pg_pattern = r'(?<="[第])\d.*?(?=[页]\\")'
+pgs= re.finditer(pg_pattern, datas, re.MULTILINE)
+pg1 = (int(pg.group()) for pg  in pgs)
+urlsset = []
+with open('d:km.txt','a') as f:
+    for i in range(1,max(pg1)+1):
+        starturl_i = start_url + "spm=a2h0k.11417342.pageturning.dpagenumber"+"&pg=" + str(i)+ "&aaid=4e87b6270769cbd7c8c288e5670672ad"
+        r = requests.get(starturl_i)
+        startdata_i = r.text
+        time.sleep(i)
+        regex = r'(?<=v_show\/id_)[a-zA-Z].*?(?=\\)|(?<=v_show\/id_)[a-zA-Z].*?(?==)'  #正则取页面中的URL
+        matches = re.finditer(regex, str(startdata_i), re.MULTILINE)   #取出url
+        regexurl_i = [urs.group()  for urs  in matches]
+        urls = ['https://v.youku.com/v_show/id_' + url +'?spm=a2h0k.11417342.soresults.dtitle' for url in regexurl_i ]
+        for url in urls:
+            f.writelines(url+"\n")
+
+
+
+
+
+
+
