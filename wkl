@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+#-*- coding:utf-8 -*-
+import  requests
+import  re
+import mysql.connector
+from lxml import etree
+import random
+import numpy as np 
+import time
+urls = []
+with open('d:/km.txt','r') as f:
+    m = f.readlines()
+    for k in m:
+        urls.append(k)
+url = list(set(urls))
+final_data = []
+s = []
+
+total=set()
+for i   in range(len(url)):
+    r = requests.get(url[i])
+    tt = random.randint(0,15)
+    datas_i  = r.text
+    seq =random
+    time.sleep(tt)
+    # print({i:url[i]})
+    selector = etree.HTML(datas_i)
+    dayuname = selector.xpath("///dd[@class='dayu-title']/h2/a//text()")
+    tvinfoname = selector.xpath('//div[@class="tvinfo"]/h2/a/text()')
+    name1 = selector.xpath('//*//h2/a/text()')  # 专辑
+    name2 =selector.xpath('//h3[@class="drama-title"]/text()')#相关推荐
+    name3 = selector.xpath('//*[@id="module_basic_dayu_sub"]//h2/a/text()')  # KOL
+    titles = selector.xpath('//a/div[@class="title"]/text()')
+    nums = selector.xpath('//a/div[@class="status"]/span/text()')
+    lengths = selector.xpath('//a/div[@class="cover"]/span[@class="c-time"]/span/text()')
+    dates = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    # final = [(str(name1[0]),str(nums[nt]),(str(titles[nt]).strip("\r\n \n")),str(lengths[nt]),dates) for nt in range(len(nums))]
+    seta=set((str(name1[0]),str(nums[nt]),(str(titles[nt]).strip("\r\n \n")),str(lengths[nt]),dates) for nt in range(len(nums)))
+    setb=total
+    total = seta.union(setb)
+print(list(total))
+
+try:
+    conn = mysql.connector.connect(user='root', password='123123', database='worldcup')
+    cursor = conn.cursor()
+    stmt = "INSERT INTO youkulist (name,num,title,length,dates) VALUES (%s, %s,%s,%s,%s)"
+    cursor.executemany(stmt, list(total))
+    print('rowcount =', cursor.rowcount)
+    conn.commit()
+    cursor.close()
+except:
+    pass
+
