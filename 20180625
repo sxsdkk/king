@@ -1,0 +1,89 @@
+#!/usr/bin/python3
+#-*- coding:utf-8 -*-
+import  requests
+import  re
+import mysql.connector
+from lxml import etree
+import random
+import numpy as np 
+import time
+urls = []
+with open('d:/km.txt','r') as f:
+    m = f.readlines()
+    for k in m:
+        urls.append(k)
+url = list(set(urls))
+
+total=set()
+
+
+for i   in range(len(url)):
+    r = requests.get(url[i],timeout=5)
+    tt = random.randint(1,5)
+    data  = r.text
+    episodeLast1 =r"(?<=episodeLast: ').*?(?=',)"#判断视频数
+    episodeLast = re.finditer( episodeLast1, data, re.MULTILINE)
+    pg =  [int(pg.group()) for pg  in episodeLast]
+    print(str(pg)+":"+url[i])
+
+    # if [int(pg.group()) for pg  in episodeLast][0] >100:
+    #     print([int(pg.group()) for pg  in episodeLast][0])
+    #     videoEncodeId1 = r"(?<= videoId2: ').*?(?=',)"
+    #     videoCategoryId1 =r"(?<= videoCategoryId: ').*?(?=',)"
+    #     showid1 = r"(?<=showid: ').*?(?=',)"
+    #     vid1=r"(?<=videoId: ').*?(?=',)"
+    #     episodeLast1=r"(?<=episodeLast: ').*?(?=',)"
+    #     componentid1=r"(?<=\"componentId\":).*?(?=}}\))"
+    #     videoEncodeId= re.finditer(videoEncodeId1, data, re.MULTILINE)
+    #     videoCategoryId = re.finditer(videoEncodeId1, data, re.MULTILINE)
+    #     showid= re.finditer(showid1, data, re.MULTILINE)
+    #     vid= re.finditer(vid1, data, re.MULTILINE)
+    #     componentid =re.finditer(componentid1, data, re.MULTILINE)
+    #     uri = 'https://v.youku.com/page/playlist?&l=debug&pm=3&vid='+vid+'&fid=0&showid='+showid+'&sid=0&componentid='+componentid+'&videoCategoryId='+videoCategoryId+'&isSimple=false&videoEncodeId='+videoEncodeId+'&page=2&callback=tuijsonp9'
+
+
+
+
+
+
+#     datas_i = data.encode('utf-8')
+#         # print(data)
+#     seq =random
+#     time.sleep(tt)
+#         # print({i:url[i]})
+#     selector = etree.HTML(datas_i)
+#     dayuname = selector.xpath("///dd[@class='dayu-title']/h2/a//text()")
+#     tvinfoname = selector.xpath('//div[@class="tvinfo"]/h2/a/text()')
+#     name1 = selector.xpath('//*//h2/a/text()')  # 专辑
+#     name2 =selector.xpath('//h3[@class="drama-title"]/text()')#相关推荐
+#     name3 = selector.xpath('//*[@id="module_basic_dayu_sub"]//h2/a/text()')  # KOL
+#     titles = selector.xpath('//a/div[@class="title"]/text()')
+#     nums = selector.xpath('//a/div[@class="status"]/span/text()')
+#     lengths = selector.xpath('//a/div[@class="cover"]/span[@class="c-time"]/span/text()')
+#     dates = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+#         #final = [(str(name1[0]),str(nums[nt]),((titles[nt]).strip("\r\n \n \.\.\.")),str(lengths[nt]),dates) for nt in range(len(nums))]
+#     seta=set((str(name1[0]),str(nums[nt]),((titles[nt]).strip("\r\n \n \.\.\.")),str(lengths[nt])) for nt in range(len(nums)))
+#        # print(seta)
+#     setb=total
+#     total = seta.union(setb)
+#     print(r.encoding +":"+ str(i)+url[i])
+#     print(len(name1),len(nums),len(titles),len(lengths))
+#     if len(nums)==len(titles)==len(lengths):
+#         print('true')
+#     else:
+#         print(len(name1),len(nums),len(titles),len(lengths))
+
+# # with open('d:/kms.txt','a',encoding='utf-8')  as f:
+
+# #         f.writelines(str(final))
+     
+# conn = mysql.connector.connect(user='root', password='261190', database='worldcup')
+# cursor = conn.cursor()
+# stmt = "INSERT INTO youkulistss(name,num,title,length) VALUES (%s, %s,%s,%s)"
+# cursor.executemany(stmt, list(set(total)))
+# print('rowcount =', cursor.rowcount)
+# conn.commit()
+# cursor.close()
+
+
+
